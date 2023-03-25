@@ -67,7 +67,7 @@ namespace BossDespawn
             #region config
             Config.SaveOnConfigSet = false;
 
-            radiusConfig = config("General", "Lamp Radius", 40f, new ConfigDescription("", new AcceptableValueRange<float>(15f, 100)));
+            radiusConfig = config("General", "Despawn radius", 110f, new ConfigDescription("", new AcceptableValueRange<float>(15f, 250)));
 
             SetupWatcherOnConfigFile();
             Config.ConfigReloaded += (_, _) => { UpdateConfiguration(); };
