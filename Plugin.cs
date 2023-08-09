@@ -3,7 +3,9 @@ using HarmonyLib;
 using BepInEx.Configuration;
 using ServerSync;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -70,10 +72,18 @@ public class Plugin : BaseUnityPlugin
     #region values
 
     internal static ConfigEntry<float> radiusConfig;
+    internal static ConfigEntry<BossFilterMode> filterModeConfig;
+    internal static ConfigEntry<string> whiteListConfig;
+    internal static ConfigEntry<string> blackListConfig;
+    //internal static ConfigEntry<float> despawnDelayConfig;
     internal static float radius;
+    internal static BossFilterMode filterMode;
+    internal static List<string> whiteList = new();
+    internal static List<string> blackList = new();
+    //internal static float despawnDelay = new();
 
     #endregion
-    
+
     private void Awake()
     {
         _self = this;
@@ -83,7 +93,16 @@ public class Plugin : BaseUnityPlugin
         Config.SaveOnConfigSet = false;
 
         radiusConfig = config("General", "Despawn radius", 110f,
-            new ConfigDescription("", new AcceptableValueRange<float>(15f, 250)));
+            new ConfigDescription(string.Empty, new AcceptableValueRange<float>(25f, 250f)));
+        filterModeConfig = config("General", "Boss filter mode", filterMode, new ConfigDescription(string.Empty));
+        whiteListConfig = config("General", "Bosses white list", whiteList.GetString(),
+            new ConfigDescription(string.Empty));
+        blackListConfig = config("General", "Bosses black list", blackList.GetString(),
+            new ConfigDescription(string.Empty));
+        // despawnDelayConfig = config("General", "Despawn delay", despawnDelay,
+        //     new ConfigDescription(
+        //         "In seconds! At the moment when there is not a single player left around the boss, the timer starts for this time." +
+        //         " After it expires, the boss will check if there are players around him, and if not, it will destroy itself."));
 
         SetupWatcherOnConfigFile();
         Config.ConfigReloaded += (_, _) => { UpdateConfiguration(); };
@@ -149,12 +168,19 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    private void UpdateConfiguration()
+    private async void UpdateConfiguration()
     {
         Task task = null;
-        task = Task.Run(() => { radius = radiusConfig.Value; });
+        task = Task.Run(() =>
+        {
+            radius = radiusConfig.Value;
+            filterMode = filterModeConfig.Value;
+            blackList = blackListConfig.Value.Split(new string[1] { ", " }, StringSplitOptions.None).ToList();
+            whiteList = whiteListConfig.Value.Split(new string[1] { ", " }, StringSplitOptions.None).ToList();
+            //despawnDelay = despawnDelayConfig.Value;
+        });
 
-        Task.WaitAll();
+        await task;
         Debug("Configuration Received");
     }
 
