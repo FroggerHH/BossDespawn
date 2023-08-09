@@ -1,13 +1,13 @@
-﻿using BepInEx;
-using HarmonyLib;
-using BepInEx.Configuration;
-using ServerSync;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using HarmonyLib;
+using ServerSync;
 
 namespace BossDespawn;
 
@@ -74,11 +74,14 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<float> radiusConfig;
     internal static ConfigEntry<BossFilterMode> filterModeConfig;
     internal static ConfigEntry<string> whiteListConfig;
+
     internal static ConfigEntry<string> blackListConfig;
+
     //internal static ConfigEntry<float> despawnDelayConfig;
     internal static float radius;
     internal static BossFilterMode filterMode;
     internal static List<string> whiteList = new();
+
     internal static List<string> blackList = new();
     //internal static float despawnDelay = new();
 
@@ -96,9 +99,11 @@ public class Plugin : BaseUnityPlugin
             new ConfigDescription(string.Empty, new AcceptableValueRange<float>(25f, 250f)));
         filterModeConfig = config("General", "Boss filter mode", filterMode, new ConfigDescription(string.Empty));
         whiteListConfig = config("General", "Bosses white list", whiteList.GetString(),
-            new ConfigDescription(string.Empty));
+            new ConfigDescription(
+                "Only the listed bosses will disappear. List with \", \". Don't forget to specify the whitelist mode."));
         blackListConfig = config("General", "Bosses black list", blackList.GetString(),
-            new ConfigDescription(string.Empty));
+            new ConfigDescription(
+                "The listed bosses will not disappear. List with \", \". Don't forget to specify the blacklist mode."));
         // despawnDelayConfig = config("General", "Despawn delay", despawnDelay,
         //     new ConfigDescription(
         //         "In seconds! At the moment when there is not a single player left around the boss, the timer starts for this time." +
