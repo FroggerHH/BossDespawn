@@ -16,7 +16,7 @@ public class Plugin : BaseUnityPlugin
 {
     #region values
 
-    private const string ModName = "BossDespawn", ModVersion = "1.0.1", ModGUID = "com.Frogger." + ModName;
+    private const string ModName = "BossDespawn", ModVersion = "1.0.3", ModGUID = "com.Frogger." + ModName;
     public static Plugin _self;
 
     #endregion
