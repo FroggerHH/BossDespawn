@@ -98,6 +98,7 @@
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="Patch.cs" />
+        <Compile Include="StringExtention.cs" />
     </ItemGroup>
     <ItemGroup>
       <Content Include="ILRepack.targets" />

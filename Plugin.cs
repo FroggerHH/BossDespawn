@@ -16,7 +16,7 @@ public class Plugin : BaseUnityPlugin
 {
     #region values
 
-    private const string ModName = "BossDespawn", ModVersion = "1.0.3", ModGUID = "com.Frogger." + ModName;
+    private const string ModName = "BossDespawn", ModVersion = "1.1.0", ModGUID = "com.Frogger." + ModName;
     public static Plugin _self;
 
     #endregion
@@ -77,13 +77,13 @@ public class Plugin : BaseUnityPlugin
 
     internal static ConfigEntry<string> blackListConfig;
 
-    //internal static ConfigEntry<float> despawnDelayConfig;
+    internal static ConfigEntry<float> despawnDelayConfig;
     internal static float radius;
     internal static BossFilterMode filterMode;
     internal static List<string> whiteList = new();
 
     internal static List<string> blackList = new();
-    //internal static float despawnDelay = new();
+    internal static float despawnDelay = new();
 
     #endregion
 
@@ -104,10 +104,10 @@ public class Plugin : BaseUnityPlugin
         blackListConfig = config("General", "Bosses black list", blackList.GetString(),
             new ConfigDescription(
                 "The listed bosses will not disappear. List with \", \". Don't forget to specify the blacklist mode."));
-        // despawnDelayConfig = config("General", "Despawn delay", despawnDelay,
-        //     new ConfigDescription(
-        //         "In seconds! At the moment when there is not a single player left around the boss, the timer starts for this time." +
-        //         " After it expires, the boss will check if there are players around him, and if not, it will destroy itself."));
+        despawnDelayConfig = config("General", "Despawn delay", despawnDelay,
+            new ConfigDescription(
+                "In minutes! At the moment when there is not a single player left around the boss, the timer starts for this time." +
+                " After it expires, the boss will check if there are players around him, and if not, it will destroy itself."));
 
         SetupWatcherOnConfigFile();
         Config.ConfigReloaded += (_, _) => { UpdateConfiguration(); };
@@ -156,10 +156,8 @@ public class Plugin : BaseUnityPlugin
 
     private void ConfigChanged(object sender, FileSystemEventArgs e)
     {
-        if ((DateTime.Now - LastConfigChange).TotalSeconds <= 5.0)
-        {
+        if ((DateTime.Now - LastConfigChange).TotalSeconds <= 2.0)
             return;
-        }
 
         LastConfigChange = DateTime.Now;
         try
@@ -182,7 +180,7 @@ public class Plugin : BaseUnityPlugin
             filterMode = filterModeConfig.Value;
             blackList = blackListConfig.Value.Split(new string[1] { ", " }, StringSplitOptions.None).ToList();
             whiteList = whiteListConfig.Value.Split(new string[1] { ", " }, StringSplitOptions.None).ToList();
-            //despawnDelay = despawnDelayConfig.Value;
+            despawnDelay = despawnDelayConfig.Value;
         });
 
         await task;
