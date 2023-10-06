@@ -3,5 +3,5 @@
 internal enum BossFilterMode
 {
     BlackList,
-    WhiteList,
+    WhiteList
 }
