@@ -8,25 +8,25 @@ namespace BossDespawn;
 public class Plugin : BaseUnityPlugin
 {
     private const string ModName = "BossDespawn",
-        ModVersion = "1.2.0",
+        ModVersion = "1.4.0",
         ModGUID = $"com.{ModAuthor}.{ModName}",
         ModAuthor = "Frogger";
 
     private void Awake()
     {
-        CreateMod(this, ModName, ModAuthor, ModVersion);
-        mod.OnConfigurationChanged += UpdateConfiguration;
+        CreateMod(this, ModName, ModAuthor, ModVersion, ModGUID);
+        OnConfigurationChanged += UpdateConfiguration;
 
-        radiusConfig = mod.config("General", "Despawn radius", 110f,
+        radiusConfig = config("General", "Despawn radius", 110f,
             new ConfigDescription(string.Empty, new AcceptableValueRange<float>(25f, 250f)));
-        filterModeConfig = mod.config("General", "Boss filter mode", filterMode, new ConfigDescription(string.Empty));
-        whiteListConfig = mod.config("General", "Bosses white list", whiteList.GetString(),
+        filterModeConfig = config("General", "Boss filter mode", filterMode, new ConfigDescription(string.Empty));
+        whiteListConfig = config("General", "Bosses white list", whiteList.GetString(),
             new ConfigDescription(
                 "Only the listed bosses will disappear. List with \", \". Don't forget to specify the whitelist mode."));
-        blackListConfig = mod.config("General", "Bosses black list", blackList.GetString(),
+        blackListConfig = config("General", "Bosses black list", blackList.GetString(),
             new ConfigDescription(
                 "The listed bosses will not disappear. List with \", \". Don't forget to specify the blacklist mode."));
-        despawnDelayConfig = mod.config("General", "Despawn delay", despawnDelay,
+        despawnDelayConfig = config("General", "Despawn delay", despawnDelay,
             new ConfigDescription(
                 "In minutes! At the moment when there is not a single player left around the boss, the timer starts for this time."
                 +
